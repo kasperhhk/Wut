@@ -7,6 +7,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{948933A4-E51
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Api", "src\Api\Api.csproj", "{B8A1FDE5-A943-4D5C-8828-92A4F5F10F64}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docker", "docker", "{D080B457-C462-477C-89A2-CEF1E843DA0C}"
+	ProjectSection(SolutionItems) = preProject
+		docker\docker-compose.yml = docker\docker-compose.yml
+		docker\grafana-dashboards.yml = docker\grafana-dashboards.yml
+		docker\grafana-datasources.yml = docker\grafana-datasources.yml
+		docker\otel-collector.yml = docker\otel-collector.yml
+		docker\prometheus.yml = docker\prometheus.yml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
