@@ -1,4 +1,35 @@
+using OpenTelemetry.Logs;
+using OpenTelemetry.Metrics;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
+using System.Diagnostics;
+
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddLogging(conf =>
+{
+    conf.ClearProviders();
+    conf.AddOpenTelemetry(opts =>
+    {
+        opts.IncludeScopes = true;
+        opts.AddConsoleExporter();
+    });
+});
+
+var otel = builder.Services.AddOpenTelemetry();
+
+otel.ConfigureResource(resource => resource.AddService(serviceName: builder.Environment.ApplicationName));
+otel.WithMetrics(metrics => metrics
+    .AddAspNetCoreInstrumentation()
+    .AddMeter("Microsoft.AspNetCore.Hosting")
+    .AddMeter("Microsoft.AspNetCore.Server.Kestrel"));
+
+otel.WithTracing(tracing =>
+{
+    tracing.AddAspNetCoreInstrumentation();
+    tracing.AddHttpClientInstrumentation();
+    tracing.AddConsoleExporter();
+});
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -21,8 +52,11 @@ var summaries = new[]
     "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
 };
 
-app.MapGet("/weatherforecast", () =>
+app.MapGet("/weatherforecast", (ILogger<WeatherForecast> logger) =>
 {
+    Activity.Current?.SetTag("actvitiy.info", "weatherforecast");
+    logger.LogInformation("Got weather forecast request");
+
     var forecast =  Enumerable.Range(1, 5).Select(index =>
         new WeatherForecast
         (
@@ -31,6 +65,8 @@ app.MapGet("/weatherforecast", () =>
             summaries[Random.Shared.Next(summaries.Length)]
         ))
         .ToArray();
+
+    logger.LogInformation("Finished weather forecast request");
     return forecast;
 })
 .WithName("GetWeatherForecast")
