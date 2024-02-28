@@ -10,10 +10,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docker", "docker", "{D080B457-C462-477C-89A2-CEF1E843DA0C}"
 	ProjectSection(SolutionItems) = preProject
 		docker\docker-compose.yml = docker\docker-compose.yml
-		docker\grafana-dashboards.yml = docker\grafana-dashboards.yml
-		docker\grafana-datasources.yml = docker\grafana-datasources.yml
-		docker\otel-collector.yml = docker\otel-collector.yml
-		docker\prometheus.yml = docker\prometheus.yml
 	EndProjectSection
 EndProject
 Global
