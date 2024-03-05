@@ -12,6 +12,7 @@ public static class DoSpanEndpoint
         app.MapGet("/dospan", async (ILogger<DoSpan> logger, [FromQuery] string? caller) =>
         {
             Activity.Current?.SetTag("activity.info.caller", caller ?? "N/A");
+            Activity.Current?.AddEvent(new ActivityEvent("weow we got a dospan"));
             logger.LogInformation("Wow i got a call from {Caller}", caller);
 
             return Results.Ok();

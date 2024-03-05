@@ -20,7 +20,11 @@ public static class WeatherForecastEndpoint
         app.MapGet("/weatherforecast", async (ILogger<WeatherForecast> logger, [FromQuery] int? delay) =>
          {
              Activity.Current?.SetTag("actvitiy.info", "weatherforecast");
-             logger.LogInformation("Got weather forecast request");
+
+             logger.LogInformation("This is a weatherforecast logging event. The delay from querystring is {delay}", delay);
+
+             Activity.Current?.AddEvent(new ActivityEvent("This is a weatherforecast activity event. The delay from querystring is set as a tag 'delay'", 
+                 tags: new ActivityTagsCollection([new KeyValuePair<string, object?>("delay", delay)])));
 
              if (delay < 0)
              {
@@ -47,9 +51,11 @@ public static class WeatherForecastEndpoint
 
              if (delay > 0)
              {
+                 Activity.Current?.AddEvent(new ActivityEvent("Weatherforecast is delaying"));
                  await Task.Delay(delay.Value);
              }
 
+             Activity.Current?.AddEvent(new ActivityEvent("Finished weatherforecast"));
              logger.LogInformation("Finished weather forecast request with length: {Length}", forecast.Length);
              return Results.Ok(forecast);
          })
